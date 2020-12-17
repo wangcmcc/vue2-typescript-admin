@@ -1,36 +1,40 @@
 import axios from 'axios'
-axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
-axios.defaults.timeout = 50000
+import { Loading } from 'element-ui'
 
-export function get(url: string, params?: object | Array<any>) {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(url, {
-        params: params
-      })
-      .then(res => {
-        resolve(res.data)
-      })
-      .catch(err => {
-        reject(err.data)
-      })
-  })
+let loadings: any
+const options: object = {
+  text: 'Loading',
+  background: 'rgba(0, 0, 0, 0.7)'
 }
 
-/**
- * post方法，对应post请求
- * @param {String} url [请求的url地址]
- * @param {Object} params [请求时携带的参数]
- */
-export function post(url: string, params: object | Array<any>) {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(url, params)
-      .then(res => {
-        resolve(res.data)
-      })
-      .catch(err => {
-        reject(err.data)
-      })
+export function createService(config: object) {
+  // 创建一个axios实例
+  const service = axios.create({
+    baseURL: 'http://127.0.0.1:8888/api/private/v1/',
+    timeout: 5000
   })
+
+  // 请求拦截
+  service.interceptors.request.use(
+    config => {
+      loadings = Loading.service(options)
+      config.headers.Authorization = window.sessionStorage.getItem('token')
+      return config
+    },
+    error => {
+      return Promise.reject(error)
+    }
+  )
+
+  service.interceptors.response.use(
+    config => {
+      loadings.close()
+      return config
+    },
+    error => {
+      console.log(error)
+      return Promise.reject(error)
+    }
+  )
+  return service(config)
 }

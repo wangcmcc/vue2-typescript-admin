@@ -39,10 +39,15 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { loginUser } from '../api/http'
+interface LoginData {
+    username: string;
+    password: string;
+}
+
 @Component
 export default class Login extends Vue {
   [x: string]: any
-  loginForm: object = {
+  loginForm: LoginData = {
     username: 'admin',
     password: '123456'
   }
@@ -60,18 +65,22 @@ export default class Login extends Vue {
 
   resetLoginForm() {
     (this as any).$refs.loginFormRef.resetFields()
+    console.log(this)
   }
 
   login() {
     (this as any).$refs.loginFormRef.validate(async (valid: boolean) => {
       if (!valid) return this.$message.error('请输入完整的用户信息！')
-      const data = await loginUser(this.loginForm)
-      console.log(data)
+      const { data: res } = await loginUser(this.loginForm)
+      if (res.meta.status !== 200) return this.$message.error('登录失败')
+      this.$message.success('登录成功')
+      window.sessionStorage.setItem('token', res.data.token)
+      this.$router.push('/home')
     })
   }
 }
 </script>
-<style scoped>
+<style lang="less" scoped>
 .login_container {
   background-color: #2b4b6b;
   height: 100%;
@@ -85,8 +94,8 @@ export default class Login extends Vue {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-}
-.avatar_box {
+
+  .avatar_box {
     height: 130px;
     width: 130px;
     border: 1px solid #eee;
@@ -97,13 +106,14 @@ export default class Login extends Vue {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
-  }
-.img_png {
+    img {
       width: 100%;
       height: 100%;
       border-radius: 50%;
       background-color: #eee;
     }
+  }
+}
 .login_form {
   position: absolute;
   bottom: 0;

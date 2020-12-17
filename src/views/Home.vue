@@ -1,94 +1,158 @@
 <template>
-  <div class="home">
-    <el-table :data="tableData">
-      <el-table-column type="expand">
-        <template slot-scope="scope">
-          <el-table :data="scope.row.childData" border>
-            <el-table-column label="名字" prop="namer"></el-table-column>
-            <el-table-column label="年龄" prop="age"></el-table-column>
-          </el-table>
-        </template>
-      </el-table-column>
-      <el-table-column label="商品 ID" prop="id"> </el-table-column>
-      <el-table-column label="商品名称" prop="name">
-        <template slot-scope="scope">
-          <el-select v-model="scope.row.name">
-            <el-option v-for="item in names" :key="item" :label="item" :value="item"></el-option>
-          </el-select>
-        </template>
-      </el-table-column>
-      <el-table-column label="商品价格" prop="price"> </el-table-column>
-      <el-table-column label="操作">
-        <template  slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            circle
-            v-if="!scope.row.isShow"
-            @click='handleEditDict(scope.row)'
-          >编辑
-          </el-button>
-          <el-button
-            size="mini"
-            type="success"
-            circle
-            v-else
-            @click="saveInfo(scope.row)"
-          >确定
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
-</template>
+ <el-container class="home-container">
+   <!-- 头部区域 -->
+  <el-header>
+    <div>
+      <img src="../assets/img1.png" alt="">
+      <span>电商后台管理系统</span>
+    </div>
+    <el-button type="info" @click="logout">退出</el-button>
+  </el-header>
 
+  <!-- 主体区域 -->
+  <el-container>
+
+    <!-- 侧边栏 -->
+    <el-aside :width="isColles ? '64px' : '200px'">
+      <div class="toggle_button" @click="toggleCollles">|||</div>
+      <!-- 侧边栏测单 -->
+      <el-menu
+      background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#409BFF"
+      unique-opened
+      :collapse="isColles"
+      :collapse-transition="false"
+      router
+      :default-active="activePath"
+      >
+      <!-- 一级菜单 -->
+      <el-submenu
+      :index="item.id + ''"
+      v-for="item in menulist"
+      :key="item.id">
+        <!-- 一级菜单的模板 -->
+        <template slot="title">
+          <!-- 图标 -->
+          <i :class="iconsObj[item.id]"></i>
+          <!-- 文本 -->
+          <span>{{item.authName}}</span>
+        </template>
+
+           <!-- 二级菜单 -->
+          <el-menu-item
+          :index="'/'+subItem.path"
+          v-for="subItem in item.children"
+          :key="subItem.id"
+          @click="saveNavStatus('/' + subItem.path)"
+          >
+            <template slot="title">
+              <!-- 二级菜单的图标 -->
+              <i class="el-icon-menu"></i>
+              <!-- 二级菜单的文本 -->
+              <span>{{subItem.authName}}</span>
+            </template>
+          </el-menu-item>
+      </el-submenu>
+    </el-menu>
+    </el-aside>
+    <!-- 右侧主体内容 -->
+    <el-main>
+      <router-view></router-view>
+    </el-main>
+  </el-container>
+</el-container>
+</template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { getMenus } from '../api/http'
 @Component
 export default class Home extends Vue {
-  names: Array<string> = ['苹果8', '苹果9', '苹果11', '苹果12']
-
-  tableData: Array<object> = [
-    {
-      childData: [
-        { namer: '张三', age: 18 },
-        { namer: '李四', age: 23 }
-      ],
-      id: '1',
-      name: '',
-      price: '6500',
-      isShow: true
-    },
-    {
-      childData: [
-        { namer: '王五', age: 18 },
-        { namer: '李四', age: 23 }
-      ],
-      id: '2',
-      name: '',
-      price: '7800',
-      isShow: true
-    },
-    {
-      childData: [
-        { namer: '张三', age: 18 },
-        { namer: '李四', age: 23 }
-      ],
-      id: '3',
-      name: '',
-      price: '7800',
-      isShow: true
-    }
-  ]
-
-  handleEditDict(row: any) {
-    console.log(row)
-    row.isShow = true
+  [x: string]: any
+  menulist: Array<any> = []
+  iconsObj: object = {
+    125: 'el-icon-user',
+    103: 'el-icon-eleme',
+    101: 'el-icon-goods',
+    102: 'el-icon-s-shop',
+    145: 'el-icon-s-data'
   }
 
-  saveInfo(row: any) {
-    console.log(row)
-    row.isShow = false
+  isColles = false
+  // 被激活的连接状态
+  activePath = ''
+
+  created() {
+    this.getMenuList();
+    console.log(window.sessionStorage.getItem('activePath'))
+    const active = window.sessionStorage.getItem('activePath')
+    this.activePath = active === null ? '' : active
+  }
+
+  logout() {
+    window.sessionStorage.clear()
+    this.$router.push('/login')
+  }
+
+  // 请求侧边栏数据
+  async getMenuList() {
+    const { data: res } = await getMenus();
+    if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+    this.menulist = res.data
+    console.log(res)
+  }
+
+  // 点击菜单按钮折叠 展开
+  toggleCollles() {
+    this.isColles = !this.isColles
+  }
+
+  // 保存连接的激活状态
+  saveNavStatus(activePath: any) {
+    window.sessionStorage.setItem('activePath', activePath)
+    this.activePath = activePath
   }
 }
 </script>
+
+<style lang="less" scoped>
+.home-container {
+  height: 100%;
+}
+.el-header {
+  background-color: #373d41;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 0;
+  align-items: center;
+  color: #fff;
+  font-size: 20px;
+  > div {
+    display: flex;
+    align-items: center;
+    span {
+      margin-left: 15px;
+    }
+  }
+}
+.el-aside {
+  background-color: #333774;
+  .el-menu {
+    border-right: none;
+  }
+}
+
+.el-main {
+  background-color: #eaedf1;
+}
+
+.toggle_button {
+  background-color: #4A5064;
+  font-size: 10px;
+  line-height: 24px;
+  color: white;
+  text-align: center;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+}
+</style>

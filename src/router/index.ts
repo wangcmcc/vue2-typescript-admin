@@ -24,6 +24,10 @@ const routes: Array<RouteConfig> = [
       {
         path: '/users',
         component: () => import('@/views/user/Users.vue')
+      },
+      {
+        path: '/rights',
+        component: () => import('@/views/power/Rights.vue')
       }
     ]
   }

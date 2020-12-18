@@ -273,7 +273,7 @@ export default class Users extends Vue {
     (this as any).$refs.addFormRef.resetFields();
   }
 
-  // 展示标记用户的对话框
+  // 展示修改用户的对话框
   async showEditDialog(id: string | number) {
     const { data: res } = await getUserInfoByInfo(id)
     console.log(res)
@@ -307,7 +307,7 @@ export default class Users extends Vue {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
-    }).catch(err => err);
+    }).catch((err: any) => err);
     if (confirmResult !== 'confirm') return this.$message.info('已取消删除')
     const { data: res } = await deleteUserById(id);
     if (res.meta.status !== 200) return this.$message.error('删除失败！');

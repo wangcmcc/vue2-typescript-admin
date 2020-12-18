@@ -75,3 +75,17 @@ export const deleteUserById = (id: string | number) => {
     method: 'delete'
   })
 }
+
+/**
+ * 获取权限列表接口
+ *   type {
+ *    list --> 获取权限列表
+ *    tree --> 获取属性结构的权限列表
+ * }
+ */
+export const getRightsByType = (type: string) => {
+  return createService({
+    url: `rights/${type}`,
+    method: 'get'
+  })
+}

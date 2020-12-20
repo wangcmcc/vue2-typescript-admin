@@ -39,6 +39,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { loginUser } from '../api/http'
+import { msgCommon } from '../utils/commsg'
 interface LoginData {
     username: string;
     password: string;
@@ -70,10 +71,10 @@ export default class Login extends Vue {
 
   login() {
     (this as any).$refs.loginFormRef.validate(async (valid: boolean) => {
-      if (!valid) return this.$message.error('请输入完整的用户信息！')
+      if (!valid) return msgCommon('error', '请输入完整的用户信息！')
       const { data: res } = await loginUser(this.loginForm)
-      if (res.meta.status !== 200) return this.$message.error('登录失败')
-      this.$message.success('登录成功')
+      if (res.meta.status !== 200) return msgCommon('error', '登录失败！')
+      msgCommon('success', '登录成功!')
       window.sessionStorage.setItem('token', res.data.token)
       this.$router.push('/home')
     })

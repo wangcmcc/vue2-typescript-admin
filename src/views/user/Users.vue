@@ -172,6 +172,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { msgCommon } from '../../utils/commsg'
 import { getUsers, usersPut, addUser, getUserInfoByInfo, editUsersInfo, deleteUserById, getAllRolesInfo, saveUserRoleById } from '../../api/http'
 @Component
 export default class Users extends Vue {
@@ -262,8 +263,7 @@ export default class Users extends Vue {
   async getUserList() {
     console.log('this.queryInfo:', this.queryInfo)
     const { data: res } = await getUsers(this.queryInfo);
-    console.log(res)
-    if (res.meta.status !== 200) return this.$message.error('获取用户列表失败!');
+    if (res.meta.status !== 200) return msgCommon('error', '获取用户列表失败!');
     this.userlist = res.data.users;
     this.total = res.data.total;
   }
@@ -286,9 +286,9 @@ export default class Users extends Vue {
     const { data: res } = await usersPut(row);
     if (res.meta.status !== 200) {
       row.ms_state = !row.ms_state;
-      return this.$message.error('更新用户状态失败!');
+      msgCommon('error', '更新用户状态失败!');
     }
-    this.$message.success('修改成功');
+    msgCommon('success', '修改成功!');
   }
 
   // 点击按钮添加用户
@@ -297,8 +297,8 @@ export default class Users extends Vue {
       if (!valid) return
       const { data: res } = await addUser(this.addForm)
       console.log(res)
-      if (res.meta.status !== 201) return this.$message.error('添加用戶失敗！')
-      this.$message.success('添加用戶成功！')
+      if (res.meta.status !== 201) return msgCommon('error', '添加用戶失敗!');
+      msgCommon('success', '添加用戶成功!');
       this.dialogVisible = false
       // 重新获取所有用户
       this.getUserList()
@@ -314,7 +314,7 @@ export default class Users extends Vue {
   async showEditDialog(id: string | number) {
     const { data: res } = await getUserInfoByInfo(id)
     console.log(res)
-    if (res.meta.status !== 200) return this.$message.error('获取用户信息失败!')
+    if (res.meta.status !== 200) return msgCommon('error', '获取用户信息失败!');
     this.editForm = res.data
     this.editDiaogVisible = true
   }
@@ -330,7 +330,7 @@ export default class Users extends Vue {
       if (!valid) return
       const { data: res } = await editUsersInfo(this.editForm)
       console.log(res)
-      if (res.meta.status !== 200) return this.$message.error('更新用戶信息失敗！')
+      if (res.meta.status !== 200) return msgCommon('error', '更新用戶信息失敗！');
       this.editDiaogVisible = false
       // 重新获取所有用户
       this.getUserList()
@@ -345,9 +345,9 @@ export default class Users extends Vue {
       cancelButtonText: '取消',
       type: 'warning'
     }).catch((err: any) => err);
-    if (confirmResult !== 'confirm') return this.$message.info('已取消删除')
+    if (confirmResult !== 'confirm') return msgCommon('info', '已取消删除!');
     const { data: res } = await deleteUserById(id);
-    if (res.meta.status !== 200) return this.$message.error('删除失败！');
+    if (res.meta.status !== 200) return msgCommon('error', '删除失败！');
     this.getUserList()
     this.$message.success(res.meta.msg)
   }
@@ -358,7 +358,7 @@ export default class Users extends Vue {
 
     // 在展示对话框钱获取所有的角色列表
     const { data: res } = await getAllRolesInfo()
-    if (res.meta.status !== 200) return this.$message.error('获取角色列表失败！');
+    if (res.meta.status !== 200) return msgCommon('error', '获取角色列表失败！');
     this.rolesList = res.data;
     console.log(this.rolesList, 'aaa')
     this.setRoleDialogVisible = true
@@ -367,12 +367,12 @@ export default class Users extends Vue {
   // 点击按钮 分配角色
   async saveRoleInfo() {
     if (!this.seletedRoleId) {
-      return this.$message.warning('请选择要分配的角色')
+      msgCommon('warning', '请选择要分配的角色!');
     }
     const { data: res } = await saveUserRoleById(this.userInfo.id, this.seletedRoleId)
     console.log(res)
-    if (res.meta.status !== 200) return this.$message.error('更新角色失败！');
-    this.$message.success('更新角色成功！')
+    if (res.meta.status !== 200) return msgCommon('error', '更新角色失败！');
+    msgCommon('success', '更新角色成功！');
     this.getUserList();
     this.setRoleDialogVisible = false
   }

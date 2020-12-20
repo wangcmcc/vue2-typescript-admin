@@ -24,6 +24,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { getRightsByType } from '../../api/http'
+import { msgCommon } from '../../utils/commsg'
 @Component
 export default class Rights extends Vue {
   [x: string]: any
@@ -35,7 +36,7 @@ export default class Rights extends Vue {
 
   async getRightsList() {
     const { data: res } = await getRightsByType('list')
-    if (res.meta.status !== 200) return this.$message.error('获取权限列表失败！')
+    if (res.meta.status !== 200) return msgCommon('error', '获取权限列表失败！')
     this.rightsList = res.data;
   }
 }

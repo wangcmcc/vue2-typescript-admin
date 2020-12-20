@@ -100,6 +100,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { getAllRolesInfo, deleteRolesRightById, getRightsByType, editRolesByIdrights, saveNewRole, editRoleById, deleteRoleById } from '../../api/http'
 import { getLeafKeys } from '../../utils/index'
+import { msgCommon } from '../../utils/commsg'
 @Component
 export default class Roles extends Vue {
   [x: string]: any;
@@ -145,7 +146,7 @@ export default class Roles extends Vue {
 
   async getRoelsList() {
     const { data: res } = await getAllRolesInfo()
-    if (res.meta.status !== 200) return this.$message.error('获取角色列表信息失败！')
+    if (res.meta.status !== 200) return msgCommon('error', '获取角色列表信息失败！');
     this.rolesList = res.data
   }
 
@@ -165,15 +166,16 @@ export default class Roles extends Vue {
         if (this.editRoleId) {
           console.log('修改')
           const { data: res } = await editRoleById(this.editRoleId, this.addRoleInfo);
-          if (res.meta.status !== 200) return this.$message.error('修改角色失败！');
+          if (res.meta.status !== 200) return msgCommon('error', '修改角色失败！');
           this.getRoelsList()
-          this.$message.success('修改角色成功！');
+          // this.$message.success('修改角色成功！');
+          msgCommon('success', '修改角色成功！')
           this.addRoleDialogVisible = false
         } else {
           const { data: res } = await saveNewRole(this.addRoleInfo)
-          if (res.meta.status !== 201) return this.$message.error('添加角色失败！');
+          if (res.meta.status !== 201) return msgCommon('error', '添加角色失败！');
           this.getRoelsList()
-          this.$message.success('添加角色成功！');
+          msgCommon('error', '添加角色成功！');
           this.addRoleDialogVisible = false
         }
       } else {
@@ -189,7 +191,6 @@ export default class Roles extends Vue {
 
   // 修改/编辑 角色打开对话框
   editRoleInfo(row: any) {
-    console.log(row)
     // 此处为了省事 修改和新增用一个对话框
     this.addRoleDialogVisible = true;
     this.addRoleInfo.roleName = row.roleName
@@ -205,11 +206,11 @@ export default class Roles extends Vue {
       type: 'warning'
     }).catch((err: any) => err);
 
-    if (confirmResult !== 'confirm') return this.$message.info('已取消删除！');
+    if (confirmResult !== 'confirm') return msgCommon('info', '已取消删除！');
     const { data: res } = await deleteRoleById(id);
-    if (res.meta.status !== 200) return this.$message.error('删除角色失败！')
+    if (res.meta.status !== 200) return msgCommon('error', '删除角色失败！');
     this.getRoelsList()
-    this.$message.success('删除角色成功！');
+    msgCommon('success', '删除角色成功！');
   }
 
   // 根据权限id删除对应权限
@@ -219,11 +220,11 @@ export default class Roles extends Vue {
       cancelButtonText: '取消',
       type: 'warning'
     }).catch((err: any) => err);
-    if (confirmResult !== 'confirm') return this.$message.info('已取消删除！');
+    if (confirmResult !== 'confirm') return msgCommon('info', '已取消删除！');
     const { data: res } = await deleteRolesRightById(role.id, rightId)
-    if (res.meta.status !== 200) return this.$message.error('删除权限失败！')
+    if (res.meta.status !== 200) return msgCommon('error', '删除权限失败！');
     role.children = res.data
-    this.$message.success('删除成功！')
+    msgCommon('success', '删除成功！');
   }
 
   // 展示分配权限的对话框
@@ -232,7 +233,7 @@ export default class Roles extends Vue {
     console.log(role, 'role')
     // 获取所有权限的数据
     const { data: res } = await getRightsByType('tree')
-    if (res.meta.status !== 200) return this.$message.error('获取权限tree数据失败！')
+    if (res.meta.status !== 200) return msgCommon('error', '获取权限tree数据失败！');
     // 获取到的权限tree形数据
     this.rightsLsit = res.data;
     // 递归获取三级节点id
@@ -255,9 +256,9 @@ export default class Roles extends Vue {
     console.log(typeof idStr)
     const { data: res } = await editRolesByIdrights(this.roleId, idStr)
     console.log(res)
-    if (res.meta.status !== 200) return this.$message.error('分配角色权限失败！')
+    if (res.meta.status !== 200) return msgCommon('error', '分配角色权限失败！');
     this.getRoelsList()
-    this.$message.success('角色权限分配成功！')
+    msgCommon('success', '角色权限分配成功！');
     this.SetRightDialogVisible = false
   }
 }

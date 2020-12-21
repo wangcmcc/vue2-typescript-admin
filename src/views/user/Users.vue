@@ -1,11 +1,7 @@
 <template>
   <div>
     <!-- 面包屑导航 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    <Breadcrumb :headerData="headerData"></Breadcrumb>
     <!-- 卡片 -->
     <el-card>
       <!-- 搜索与添加区域 -->
@@ -172,11 +168,21 @@
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import Breadcrumb from '../../component/Breadcrumb.vue'
 import { msgCommon } from '../../utils/commsg'
 import { getUsers, usersPut, addUser, getUserInfoByInfo, editUsersInfo, deleteUserById, getAllRolesInfo, saveUserRoleById } from '../../api/http'
-@Component
+@Component({
+  components: {
+    Breadcrumb
+  }
+})
 export default class Users extends Vue {
   [x: string]: any;
+
+  headerData: object = {
+    manage: '用户管理',
+    sort: '用户列表'
+  }
 
   private checkEamil: any = (rule: any, value: any, cb: Function) => {
     const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/

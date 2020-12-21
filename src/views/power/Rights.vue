@@ -1,10 +1,6 @@
 <template>
     <div class="rights">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>权限管理</el-breadcrumb-item>
-        <el-breadcrumb-item>权限列表</el-breadcrumb-item>
-      </el-breadcrumb>
+      <Breadcrumb :headerData="headerData"></Breadcrumb>
       <el-card>
           <el-table :data="rightsList" border stripe>
               <el-table-column type="index"></el-table-column>
@@ -23,11 +19,20 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import Breadcrumb from '../../component/Breadcrumb.vue'
 import { getRightsByType } from '../../api/http'
 import { msgCommon } from '../../utils/commsg'
-@Component
+@Component({
+  components: {
+    Breadcrumb
+  }
+})
 export default class Rights extends Vue {
-  [x: string]: any
+  headerData: object = {
+    manage: '权限管理',
+    sort: '权限列表'
+  }
+
   rightsList: Array<object> = []
 
   created() {

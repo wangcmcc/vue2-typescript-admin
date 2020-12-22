@@ -9,7 +9,7 @@ import { createService } from '@/api/server';
  *    pagesize | 每页显示多少条数据 | 【可选参数】如果不传递，则默认获取所有分类
  *  }
  */
-export const getGoodsByTypeNum = (data: object) => {
+export const getGoodsByTypeNum = (data?: object) => {
   return createService({
     url: '/categories',
     method: 'get',

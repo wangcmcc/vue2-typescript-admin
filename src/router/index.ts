@@ -36,6 +36,10 @@ const routes: Array<RouteConfig> = [
       {
         path: '/categories',
         component: () => import('@/views/goods/Cate.vue')
+      },
+      {
+        path: '/params',
+        component: () => import('@/views/goods/Params.vue')
       }
     ]
   }

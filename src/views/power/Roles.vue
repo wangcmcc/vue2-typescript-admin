@@ -94,7 +94,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import Breadcrumb from '../../component/Breadcrumb.vue'
-import { getAllRolesInfo, deleteRolesRightById, getRightsByType, editRolesByIdrights, saveNewRole, editRoleById, deleteRoleById } from '../../api/http'
+import { deleteRolesRightById, getRightsByType, editRolesByIdrights, saveNewRole, editRoleById, deleteRoleById } from '../../api/http'
+import { getAllRolesInfo } from '../../api/user'
 import { getLeafKeys } from '../../utils/index'
 import { msgCommon } from '../../utils/commsg'
 @Component({

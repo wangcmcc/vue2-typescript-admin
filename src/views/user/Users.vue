@@ -170,7 +170,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import Breadcrumb from '../../component/Breadcrumb.vue'
 import { msgCommon } from '../../utils/commsg'
-import { getUsers, usersPut, addUser, getUserInfoByInfo, editUsersInfo, deleteUserById, getAllRolesInfo, saveUserRoleById } from '../../api/http'
+import { getUsers, usersPut, addUser, getUserInfoByInfo, editUsersInfo, deleteUserById, getAllRolesInfo, saveUserRoleById } from '../../api/user'
 @Component({
   components: {
     Breadcrumb

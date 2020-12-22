@@ -52,3 +52,52 @@ export const deleteCateById = (id: number) => {
     method: 'delete'
   });
 };
+
+/**
+ *  获取参数列表 /categories/{id}/attributes
+ */
+export const getCateAttributeById = (id: number, sel: string) => {
+  return createService({
+    url: `/categories/${id}/attributes`,
+    method: 'get',
+    params: {
+      sel
+    }
+  });
+};
+
+/**
+ *  添加属性 categories/:id/attributes
+ */
+export const addattributes = (id: number, data: object) => {
+  return createService({
+    url: `categories/${id}/attributes`,
+    method: 'post',
+    data
+  });
+};
+
+/**
+ *  编辑、修改属性 categories/:id/attributes/:attrId
+ */
+export const editattributes = (data: any) => {
+  return createService({
+    url: `categories/${data.cat_id}/attributes/${data.attr_id}`,
+    method: 'put',
+    data: {
+      attr_name: data.attr_name,
+      attr_sel: data.attr_sel,
+      attr_vals: data.attr_vals
+    }
+  });
+};
+
+/**
+ *  删除属性 categories/:id/attributes/:attrId
+ */
+export const deleteattributes = (data: any) => {
+  return createService({
+    url: `categories/${data.cat_id}/attributes/${data.attr_id}`,
+    method: 'delete'
+  });
+};

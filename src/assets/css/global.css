@@ -23,3 +23,6 @@ body,
 .mt20 {
   margin-top: 20px;
 }
+.el-tag {
+    margin: 7px;
+}

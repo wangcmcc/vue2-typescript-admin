@@ -105,7 +105,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import Breadcrumb from '../../component/Breadcrumb.vue'
-import { getGoodsByTypeNum, getCateAttributeById } from '../../api/goods'
+import { getGoodsByTypeNum, getCateAttributeById, addGoods } from '../../api/goods'
 import { msgCommon } from '../../utils/commsg'
 // 调用编辑器
 import { quillEditor } from 'vue-quill-editor';
@@ -136,7 +136,8 @@ export default class Add extends Vue {
     goods_number: 0,
     goods_cat: [],
     pics: [],
-    goods_introduce: ''
+    goods_introduce: '',
+    attrs: []
   }
 
   AddFormRules: object = {
@@ -254,13 +255,38 @@ export default class Add extends Vue {
     console.log(this.AddForm.pics)
   }
 
+  // 添加商品
   add() {
-    (this as any).$refs.AddFormRef.validate((valid: boolean) => {
+    (this as any).$refs.AddFormRef.validate(async (valid: boolean) => {
       if (!valid) {
         msgCommon('error', '请添加商品必要项！')
         return false
-      }
-      console.log(this.AddForm)
+      };
+      const submitData = JSON.parse(JSON.stringify(this.AddForm));
+      submitData.goods_cat = submitData.goods_cat.join(',');
+      // 处理动态参数
+      this.manyTableData.forEach((item: any) => {
+        const newInfo = {
+          attr_id: item.attr_id,
+          attr_value: item.attr_vals.join(',')
+        }
+        this.AddForm.attrs.push(newInfo)
+      })
+      // 处理静态参数
+      this.onlyTableData.forEach((item: any) => {
+        const newInfo = {
+          attr_id: item.attr_id,
+          attr_value: item.attr_vals
+        }
+        this.AddForm.attrs.push(newInfo)
+      })
+      submitData.attrs = this.AddForm.attrs
+      console.log(submitData, 'submitData');
+      // 添加商品请求 商品名称唯一
+      const { data: res } = await addGoods(submitData);
+      if (res.meta.status !== 201) return msgCommon('error', '添加商品失败！');
+      msgCommon('success', '添加商品成功!');
+      (this as any).$router.push('/goods')
     });
   }
 }

@@ -122,3 +122,14 @@ export const deleteGoodsById = (id: number | string) => {
     method: 'delete'
   });
 };
+
+/**
+ *  添加商品 /goods
+ */
+export const addGoods = (data: object) => {
+  return createService({
+    url: '/goods',
+    method: 'post',
+    data
+  });
+};

@@ -101,3 +101,24 @@ export const deleteattributes = (data: any) => {
     method: 'delete'
   });
 };
+
+/**
+ * 获取商品列表参数  /goods
+ */
+export const getGoodsInfo = (query: any) => {
+  return createService({
+    url: '/goods',
+    method: 'get',
+    params: query
+  });
+};
+
+/**
+ * 根据商品id删除该条商品信息
+ */
+export const deleteGoodsById = (id: number | string) => {
+  return createService({
+    url: `/goods/${id}`,
+    method: 'delete'
+  });
+};

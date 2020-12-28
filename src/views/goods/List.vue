@@ -94,6 +94,7 @@ export default class List extends Vue {
     if (res.meta.status !== 200) return msgCommon('error', '获取商品列表失败！')
     this.goodsList = res.data.goods;
     this.total = res.data.total
+    console.log(this.goodsList)
   }
 
   handleSizeChange(value: number) {
